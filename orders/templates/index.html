@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Замовлення продукції</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Замовити продукцію</h2>
+
+        {% if message %}
+            <div class="success-alert">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <form action="" method="POST" id="orderForm">
+            {% csrf_token %}
+
+            <div id="goods-container">
+                <div class="product-row">
+                    <div class="row-header">
+                        <h4>Товар #1</h4>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Товар:</label>
+                        <select name="product[]" required>
+                            <option value="пастила">Пастила</option>
+                            <option value="фріпси">Фріпси</option>
+                            <option value="флакси">Флакси</option>
+                            <option value="джерки">Джерки</option>
+                            <option value="ласощі для тварин">Ласощі для тварин</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Смак:</label>
+                        <select name="flavor[]" required>
+                            <option value="апельсиновий">Апельсиновий</option>
+                            <option value="яблучний">Яблучний</option>
+                            <option value="грушевий">Грушевий</option>
+                            <option value="льон">Льон</option>
+                            <option value="кунжут">Кунжут</option>
+                            <option value="курка">Курка</option>
+                            <option value="свинина">Свинина</option>
+                            <option value="яловичина">Яловичина</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-row">
+                        <div class="half-box">
+                            <label>Вага в упаковці:</label>
+                            <select name="weight[]" required>
+                                <option value="30 г">30 г</option>
+                                <option value="50 г">50 г</option>
+                                <option value="80 г">80 г</option>
+                                <option value="100 г">100 г</option>
+                                <option value="500 г">500 г</option>
+                                <option value="1 кг">1 кг</option>
+                            </select>
+                        </div>
+                        <div class="half-box">
+                            <label>Кількість, шт:</label>
+                            <input type="number" name="quantity[]" class="qty-input" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <hr class="row-divider">
+                </div>
+            </div>
+
+            <button type="button" id="add-product-btn" class="btn-secondary">+ Додати ще товар</button>
+
+            <div class="price-box">
+                <span>Загальна вартість: <strong><span id="totalPrice">100</span> грн</strong></span>
+                <input type="hidden" name="total_price_val" id="totalPriceVal" value="100">
+            </div>
+
+            <div class="form-group">
+                <label>Спосіб оплати:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="payment" value="Готівкою при отриманні" checked> Готівкою при отриманні
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="payment" value="Картою на сайті"> Картою на сайті
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="delivery_type">Спосіб доставки:</label>
+                <select name="delivery_type" id="delivery_type" required>
+                    <option value="Нова Пошта">Нова Пошта місто відділення №___</option>
+                    <option value="Укрпошта">Укрпошта відділення місто вулиця дім корпус квартира</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Детальні дані доставки:</label>
+                <input type="text" name="address" id="address" placeholder="Введіть адресу" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Контактний телефон:</label>
+                <input type="tel" name="phone" id="phone" placeholder="+380" required>
+            </div>
+
+            <div class="form-group">
+                <label>Вам нагадати про відправлене замовлення?</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="remind" value="Так" checked> Так
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="remind" value="Ні"> Ні
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Оформити замовлення</button>
+        </form>
+    </div>
+
+    <script>
+        const goodsContainer = document.getElementById('goods-container');
+        const addBtn = document.getElementById('add-product-btn');
+        const totalPriceSpan = document.getElementById('totalPrice');
+        const totalPriceVal = document.getElementById('totalPriceVal');
+        let count = 1;
+
+        function updatePrice() {
+            let total = 0;
+            document.querySelectorAll('.qty-input').forEach(i => {
+                total += (parseInt(i.value) || 0) * 100; // Фіксована імітація ціни
+            });
+            totalPriceSpan.innerText = total;
+            totalPriceVal.value = total;
+        }
+
+        addBtn.addEventListener('click', () => {
+            count++;
+            const div = document.createElement('div');
+            div.classList.add('product-row');
+            div.innerHTML = `
+                <div class="row-header"><h4>Товар #${count}</h4><button type="button" class="btn-remove" onclick="this.closest('.product-row').remove(); updatePrice();">Видалити</button></div>
+                <div class="form-group"><label>Товар:</label><select name="product[]" required><option value="пастила">Пастила</option><option value="фріпси">Фріпси</option><option value="флакси">Флакси</option><option value="джерки">Джерки</option><option value="ласощі для тварин">Ласощі для тварин</option></select></div>
+                <div class="form-group"><label>Смак:</label><select name="flavor[]" required><option value="апельсиновий">Апельсиновий</option><option value="яблучний">Яблучний</option><option value="грушевий">Грушевий</option><option value="льон">Льон</option><option value="кунжут">Кунжут</option><option value="курка">Курка</option><option value="свинина">Свинина</option><option value="яловичина">Яловичина</option></select></div>
+                <div class="form-group mb-row">
+                    <div class="half-box"><label>Вага:</label><select name="weight[]" required><option value="30 г">30 г</option><option value="50 г">50 г</option><option value="80 г">80 г</option><option value="100 г">100 г</option><option value="500 г">500 г</option><option value="1 кг">1 кг</option></select></div>
+                    <div class="half-box"><label>Кількість:</label><input type="number" name="quantity[]" class="qty-input" min="1" value="1" required></div>
+                </div><hr class="row-divider">`;
+            goodsContainer.appendChild(div);
+            updatePrice();
+            div.querySelector('.qty-input').addEventListener('input', updatePrice);
+        });
+
+        document.querySelector('.qty-input').addEventListener('input', updatePrice);
+    </script>
+</body>
+</html>

@@ -25,23 +25,28 @@ Markdown
 ## 📋 Інструкція із розгортання та запуску
 
 ### 1. Клонування проекту та перехід у директорію
-```bash
+
 git clone <посилання_на_мій_репозиторій>
+
 cd shop_project
 
-2. Створення та активація віртуального середовища (venv)
+### 2. Створення та активація віртуального середовища (venv)
 
 python -m venv venv
-# Для Windows (PowerShell):
+
+*Для Windows (PowerShell):*
+
 .\venv\Scripts\Activate.ps1
 
-3. Встановлення залежностей
+### 3. Встановлення залежностей
 
 pip install -r requirements.txt
-# Встановлено сучасний драйвер бази даних:
+
+*Встановлюю драйвер бази даних:*
+
 pip install psycopg[binary]
 
-4. Налаштування змінних оточення (.env)
+### 4. Налаштування змінних оточення (.env)
 Створюю файл .env у кореневій папці проекту (/shop_project/.env) та заповнюю його за зразком:
 
 DEBUG=True
@@ -56,22 +61,27 @@ DB_PORT=5432
 TELEGRAM_BOT_TOKEN=your_bot_token_from_botfather
 TELEGRAM_CHANNEL_ID=your_personal_chat_id_or_channel_id
 
-5. Запуск міграцій (Створення таблиць у базі даних)
+### 5. Запуск міграцій (Створення таблиць у базі даних)
 
 python manage.py makemigrations
+
 python manage.py migrate
 
-6. Створення адміністратора сайту (Суперкористувача)
+### 6. Створення адміністратора сайту (Суперкористувача)
 
 python manage.py createsuperuser
 
-7. Запуск локального веб-сервера
+### 7. Запуск локального веб-сервера
 
 python manage.py runserver
+
 
 Після цього відкриваю браузер та переходжу за адресою: http://127.0.0.1:8000/
 
 
+
+
+```bash
 📂 Структура проекту
 
 shop_project/
